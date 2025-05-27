@@ -1,191 +1,138 @@
-🔗 Functional Effect chaining
-- 💉 Type-safe dependency injection
-- 🔄 Composable Effects (transform, chain)
-- ⚡ Parallel processing (all, race, sequence)
-- 🛡️ Phantom types for compile-time safety
-- 🗄️ Built-in Prisma & Redis support
+# Nerd Toolkit
 
-**Quick Example:**
+현대적 TypeScript 개발을 위한 멀티패러다임 툴킷
+
+## 비전
+
+**Nerd Toolkit**은 TypeScript의 강력한 타입 시스템을 기반으로, 함수형·객체지향·절차적 프로그래밍 패러다임을 자유롭게 조합할 수 있는 실용적 라이브러리 모음입니다. 개발자가 문제에 가장 적합한 패러다임을 선택하고 조합할 수 있도록 지원합니다.
+
+## 설계 철학
+
+### 🎯 **타입 안전성 우선**
+- 런타임 에러를 컴파일 타임에 미리 발견
+- TypeScript의 타입 시스템을 최대한 활용
+- 타입 추론을 통한 자연스러운 개발 경험
+
+### 🔀 **멀티패러다임 지원**
+- 함수형: 불변성, 순수 함수, 모나드 패턴
+- 객체지향: 클래스, 캡슐화, 상속
+- 절차적: 직관적인 단계별 처리
+- 패러다임 간 자연스러운 조합과 전환
+
+### 🧪 **테스트 주도 설계**
+- 격리된 단위 테스트가 자연스럽게 작성되는 구조
+- Mock과 Stub이 쉬워지는 의존성 주입
+- 각 패러다임에 맞는 테스트 전략 지원
+
+### ⚡ **개발자 경험 최적화**
+- 직관적이고 일관된 API 설계
+- 뛰어난 IDE 지원과 자동완성
+- 명확한 에러 메시지와 디버깅 경험
+
+## 패키지 생태계
+
+### 📦 **@nerd-toolkit/state-store**
+*타입 안전한 상태 관리*
+
 ```typescript
-import { withDB, withCache, withLogger, getDefaultDep } from '@nerd-toolkit/effect-chain';
+// 빌더 패턴 + 불변성
+const store = createStore<AppState>()
+  .initialState(initialState)
+  .computed({ /* 함수형 */ })
+  .actions({ /* 절차적 */ })
+  .build();
+```
 
-const getUserWithCache = (userId: string) =>
-  withCache(cache => cache.get(`user:${userId}`))
-    .chain(cached => {
-      if (cached) return pure(JSON.parse(cached));
-      
-      return withDB(db => db.user.findUnique({ where: { id: userId } }))
-        .chain(user => 
-          withCache(cache => {
-            cache.set(`user:${userId}`, JSON.stringify(user), 3600);
-            return user;
-          })
-        );
-    })
-    .chain(user =>
-      withLogger(logger => {
-        logger.info(`User ${userId} accessed`);
-        return user;
-      })
+### ⚡ **@nerd-toolkit/effect-chain**
+*의존성 주입 & Effect 시스템*
+
+```typescript
+// 함수형 모나드 + 절차적 플로우
+const workflow = withDB(loadUser)
+  .chain(user => updateCache(user))
+  .transform(result => processResult(result));
+```
+
+### 🔮 **향후 계획**
+- **@nerd-toolkit/validation**: 스키마 검증 & 타입 가드
+- **@nerd-toolkit/async**: 비동기 작업 관리 & 동시성 제어
+- **@nerd-toolkit/collections**: 타입 안전한 자료구조 & 알고리즘
+- **@nerd-toolkit/http**: 타입 안전한 HTTP 클라이언트
+- **@nerd-toolkit/config**: 환경 설정 & 구성 관리
+
+## 핵심 가치
+
+### 🎨 **실용주의**
+이론적 순수성보다는 실제 문제 해결에 집중합니다. 각 패러다임의 장점을 취하고 단점을 보완하는 현실적 접근을 추구합니다.
+
+### 🌱 **점진적 도입**
+기존 코드베이스에 부담 없이 점진적으로 도입할 수 있습니다. 전체를 한 번에 바꿀 필요 없이 필요한 부분부터 적용 가능합니다.
+
+### 🔧 **생산성 향상**
+반복적인 보일러플레이트를 줄이고, 타입 안전성을 통해 리팩토링과 유지보수를 쉽게 만듭니다.
+
+
+## 사용 예시
+
+### 전통적 객체지향 + 현대적 함수형
+```typescript
+class UserService {
+  constructor(private deps: Dependencies) {}
+
+  async registerUser(data: UserData) {
+    // 함수형 검증
+    const validated = pipe(
+      data,
+      validateEmail,
+      validatePassword,
+      validateRequired
     );
 
-// Usage
-const deps = await getDefaultDep();
-const user = await getUserWithCache('123').run(deps);
+    // Effect 체인으로 비즈니스 로직
+    return withDB(db => db.user.create({ data: validated }))
+      .chain(user => withEmail(email => email.sendWelcome(user)))
+      .chain(user => withCache(cache => cache.set(`user:${user.id}`, user)))
+      .run(this.deps);
+  }
+}
 ```
 
-
-## Architecture
-
-### Monorepo Structure
-
-```
-nerd-toolkit/
-├── packages/
-│   ├── state-store/           # State management library
-│   │   ├── src/
-│   │   │   ├── core/          # Core functionality
-│   │   │   ├── types/         # Type definitions
-│   │   │   ├── middlewares/   # Middleware implementations
-│   │   │   └── utils/         # Utility functions
-│   │   └── package.json
-│   └── effect-chain/          # Effect system library
-│       ├── src/
-│       │   ├── Effect.ts      # Core Effect class
-│       │   ├── creators.ts    # Effect creator functions
-│       │   ├── types.ts       # Type definitions
-│       │   └── depsTypes.ts   # Dependency type definitions
-│       ├── prisma/
-│       │   └── schema.prisma  # Database schema
-│       └── package.json
-├── .changeset/                # Changeset configuration
-├── package.json               # Root package.json
-└── pnpm-workspace.yaml       # Workspace configuration
-```
-
-### Design Principles
-
-1. **Type Safety First**: Every API is designed with TypeScript's type system in mind
-2. **Functional Programming**: Embrace immutability and pure functions where possible
-3. **Composability**: Build complex functionality from simple, composable pieces
-4. **Developer Experience**: Intuitive APIs with excellent TypeScript IntelliSense
-5. **Performance**: Efficient implementations with minimal runtime overhead
-
-## Examples
-
-### State Management with Effect System
-
-Combining both libraries for powerful state management with side effects:
-
+### 순수 함수형 접근
 ```typescript
-import { createStore } from '@nerd-toolkit/state-store';
-import { withDB, withCache, Effect, getDefaultDep } from '@nerd-toolkit/effect-chain';
+const registerUserWorkflow = (userData: UserData) =>
+  pure(userData)
+    .transform(validateUserData)
+    .chain(saveUser)
+    .chain(sendWelcomeEmail)
+    .chain(cacheUser);
 
-interface UserState {
-  users: Record<string, User>;
-  loading: boolean;
-  error: string | null;
-}
-
-const userStore = createStore<UserState>()
-  .initialState({ users: {}, loading: false, error: null })
-  .actions({
-    setLoading: (loading: boolean) => ({ loading }),
-    setError: (error: string | null) => ({ error }),
-    setUsers: (users: Record<string, User>) => ({ users }),
-  })
-  .build();
-
-// Effect to load users with caching
-const loadUsers = () =>
-  Effect.all([
-    withCache(cache => cache.get('users:all')),
-    withDB(db => db.user.findMany()),
-  ])
-  .transform(([cached, dbUsers]) => {
-    if (cached) return JSON.parse(cached);
-    return dbUsers;
-  })
-  .chain(users =>
-    withCache(cache => {
-      cache.set('users:all', JSON.stringify(users), 300);
-      return users;
-    })
-  );
-
-// Usage
-async function fetchUsers() {
-  userStore.actions.setLoading(true);
-  userStore.actions.setError(null);
-  
-  try {
-    const deps = await getDefaultDep();
-    const users = await loadUsers().run(deps);
-    
-    const userMap = users.reduce((acc, user) => {
-      acc[user.id] = user;
-      return acc;
-    }, {} as Record<string, User>);
-    
-    userStore.actions.setUsers(userMap);
-  } catch (error) {
-    userStore.actions.setError(error.message);
-  } finally {
-    userStore.actions.setLoading(false);
-  }
-}
+// 의존성 주입으로 실행
+const result = await registerUserWorkflow(data).run(dependencies);
 ```
 
-### Real-world Application Structure
-
+### 절차적 플로우
 ```typescript
-// stores/userStore.ts
-export const userStore = createStore<UserState>()
-  .initialState(initialUserState)
-  .computed({
-    activeUsers: (state) => Object.values(state.users).filter(u => u.active),
-    userCount: (state) => Object.keys(state.users).length,
-  })
-  .actions({
-    // ... user actions
-  })
-  .build();
-
-// effects/userEffects.ts
-export const createUser = (userData: CreateUserData) =>
-  withDB(async db => {
-    const user = await db.user.create({ data: userData });
-    return user;
-  })
-  .chain(user =>
-    withCache(cache => {
-      cache.del('users:all'); // Invalidate cache
-      return user;
-    })
-  )
-  .chain(user =>
-    withLogger(logger => {
-      logger.info('User created', { userId: user.id });
-      return user;
-    })
-  );
-
-// services/userService.ts
-export class UserService {
-  private deps: DependencyMap;
+async function processOrder(orderId: string) {
+  const store = getOrderStore();
   
-  constructor(deps: DependencyMap) {
-    this.deps = deps;
-  }
+  // 1. 주문 조회
+  store.actions.setLoading(true);
+  const order = await fetchOrder(orderId);
   
-  async createUser(userData: CreateUserData) {
-    const user = await createUser(userData).run(this.deps);
-    
-    // Update store
-    userStore.actions.addUser(user);
-    
-    return user;
-  }
+  // 2. 결제 처리
+  const payment = await processPayment(order);
+  
+  // 3. 상태 업데이트
+  store.actions.updateOrder({ orderId, status: 'paid' });
+  
+  return { order, payment };
 }
 ```
 
+## 라이센스
+
+MIT License - 자유롭게 사용, 수정, 배포 가능합니다.
+
+---
+
+*"좋은 도구는 사고를 제한하지 않고 확장한다"*
