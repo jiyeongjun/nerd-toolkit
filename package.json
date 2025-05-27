@@ -1,0 +1,55 @@
+{
+  "name": "nerd-toolkit",
+  "version": "0.1.0",
+  "description": "A collection of modern TypeScript libraries for state management, functional programming, and more",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "test": "pnpm -r test",
+    "test:watch": "pnpm -r test:watch",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "pnpm -r clean",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish",
+    "db:generate": "pnpm --filter effect-chain db:generate",
+    "db:push": "pnpm --filter effect-chain db:push",
+    "db:migrate": "pnpm --filter effect-chain db:migrate"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@types/node": "^20.11.24",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2",
+    "vitest": "^1.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.4",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/nerd-toolkit.git"
+  },
+  "license": "MIT",
+  "author": "Your Name <your.email@example.com>",
+  "keywords": [
+    "typescript",
+    "state-management",
+    "functional-programming",
+    "effect-system",
+    "monorepo",
+    "toolkit"
+  ]
+}
