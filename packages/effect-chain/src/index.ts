@@ -1,16 +1,8 @@
 // Core exports
-export { Effect } from './Effect';
+export { Effect } from './effect';
 
 // Creator functions
-export {
-  pure,
-  fromPromise,
-  withDB,
-  withLogger,
-  withCache,
-  withHttp,
-  withDeps,
-} from './creators';
+export { pure, fromPromise, withDB, withLogger, withCache, withHttp, withDeps } from './creators';
 
 // Types
 export type {
@@ -22,12 +14,7 @@ export type {
   EffectDeps,
 } from './types';
 
-export type {
-  Database,
-  CacheClient,
-  Logger,
-  HttpClient,
-} from './depsTypes';
+export type { Database, CacheClient, Logger, HttpClient } from './deps-types';
 
 // Dependencies
 export {
@@ -35,4 +22,4 @@ export {
   createTestDep,
   createPrismaClient,
   createRedisClient,
-} from './getDefaultDep';
+} from './get-default-dep';

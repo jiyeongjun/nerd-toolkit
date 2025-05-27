@@ -10,4 +10,6 @@ export default defineConfig({
   minify: true,
   treeshake: true,
   external: ['@fxts/core'],
+  // Disable composite project for tsup builds
+  tsconfig: './tsconfig.build.json',
 });

@@ -1,6 +1,9 @@
-// Public exports
-export { createStore } from './core/createStore';
-export { getSingletonStore, cleanupSingletonStoreHelper, cleanupAllSingletonStoresHelper } from './core/singletonHelper';
+export { createStore } from './core/create-store';
+export {
+  getSingletonStore,
+  cleanupSingletonStoreHelper,
+  cleanupAllSingletonStoresHelper,
+} from './core/singleton-helper';
 
 // Types
 export type {
@@ -9,16 +12,12 @@ export type {
   ActionsDef,
   AsyncResult,
   AsyncActionsDef,
-} from './types/public-types';
+} from './core/types/public-types';
 
-export type {
-  Store,
-  StoreInternal,
-  Middleware,
-} from './types/internal/store';
+export type { Store, Middleware } from './core/types/internal/store';
 
 // Middlewares
-export { createLogger } from './middlewares/createLogger';
+export { createLogger } from './core/middlewares/create-logger';
 
 // Utils
 export { isClient, isServer } from './utils/env';

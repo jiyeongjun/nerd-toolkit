@@ -1,4 +1,4 @@
-import { Database, Logger, CacheClient, HttpClient } from './depsTypes';
+import type { Database, Logger, CacheClient, HttpClient } from './deps-types';
 
 /**
  * 의존성 키를 문자열 리터럴 타입으로 제한
@@ -35,4 +35,4 @@ export type EffectResults<Effects extends ReadonlyArray<IEffect<unknown, Depende
 
 /** 여러 IEffect의 모든 의존성 키들의 유니온 타입 */
 export type EffectDeps<Effects extends ReadonlyArray<IEffect<unknown, DependencyKey>>> =
-  Effects[number] extends IEffect<any, infer D> ? D : never;
+  Effects[number] extends IEffect<unknown, infer D> ? D : never;

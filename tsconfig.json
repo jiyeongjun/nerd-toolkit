@@ -1,32 +1,18 @@
 {
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/state-store"
+    },
+    {
+      "path": "./packages/effect-chain"
+    }
+  ],
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "allowJs": true,
-    "checkJs": false,
-    "strict": true,
-    "noEmit": true,
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "removeComments": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "incremental": true,
-    "composite": true,
-    "baseUrl": ".",
-    "paths": {
-      "@nerd-toolkit/state-store": ["./packages/state-store/src"],
-      "@nerd-toolkit/effect-chain": ["./packages/effect-chain/src"]
-    }
-  },
-  "include": ["packages/*/src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+    "tsBuildInfoFile": ".tsbuildinfo"
+  }
 }

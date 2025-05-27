@@ -1,4 +1,4 @@
-import { DependencyKey, DependencyMap, EffectDeps, EffectResults, IEffect, PartialDeps } from './types';
+import type { DependencyKey, DependencyMap, EffectDeps, EffectResults, IEffect, PartialDeps } from './types';
 
 export class Effect<T, D_CURRENT extends DependencyKey = never> implements IEffect<T, D_CURRENT> {
   public readonly _D: D_CURRENT = undefined as any; // 팬텀 타입
