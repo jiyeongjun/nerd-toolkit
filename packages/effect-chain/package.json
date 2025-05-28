@@ -33,9 +33,10 @@
     "redis": "^4.6.13"
   },
   "devDependencies": {
+    "@types/redis": "^4.0.11",
     "prisma": "^5.10.2",
     "tsup": "^8.0.2",
     "vitest": "^1.4.0",
-    "@types/redis": "^4.0.11"
+    "vitest-mock-extended": "^3.1.0"
   }
 }

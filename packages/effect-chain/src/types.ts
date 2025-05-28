@@ -15,24 +15,20 @@ export interface DependencyMap {
   http: HttpClient;
 }
 
-export type PartialDeps<K extends DependencyKey> = Pick<DependencyMap, K>;
-
 /**
  * 실행 가능한 Effect의 핵심 명세. 데이터 속성만 포함합니다.
  * 체이닝 메소드는 Effect 클래스에 구현됩니다.
+ * 
+ * 모든 Effect는 완전한 의존성 맵을 요구합니다.
  */
-export interface IEffect<T, D_KEYS extends DependencyKey = never> {
-  readonly _D: D_KEYS; // 팬텀 타입으로 의존성 키 추적
-  readonly run: (dependencies: PartialDeps<D_KEYS>) => Promise<T>;
+export interface IEffect<T> {
+  readonly run: (dependencies: DependencyMap) => Promise<T>;
 }
 
 // --- 유틸리티 타입 (Effect 배열용) ---
 
 /** 여러 IEffect의 결과 타입을 튜플로 표현 */
-export type EffectResults<Effects extends ReadonlyArray<IEffect<unknown, DependencyKey>>> = {
-  [K in keyof Effects]: Effects[K] extends IEffect<infer T, any> ? T : never;
+export type EffectResults<Effects extends ReadonlyArray<IEffect<unknown>>> = {
+  [K in keyof Effects]: Effects[K] extends IEffect<infer T> ? T : never;
 };
 
-/** 여러 IEffect의 모든 의존성 키들의 유니온 타입 */
-export type EffectDeps<Effects extends ReadonlyArray<IEffect<unknown, DependencyKey>>> =
-  Effects[number] extends IEffect<unknown, infer D> ? D : never;
