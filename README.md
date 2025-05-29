@@ -132,7 +132,3 @@ async function processOrder(orderId: string) {
 ## 라이센스
 
 MIT License - 자유롭게 사용, 수정, 배포 가능합니다.
-
----
-
-*"좋은 도구는 사고를 제한하지 않고 확장한다"*
