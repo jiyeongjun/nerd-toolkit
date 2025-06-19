@@ -18,11 +18,11 @@ export interface DependencyMap {
 /**
  * 실행 가능한 Effect의 핵심 명세. 데이터 속성만 포함합니다.
  * 체이닝 메소드는 Effect 클래스에 구현됩니다.
- * 
+ *
  * 모든 Effect는 완전한 의존성 맵을 요구합니다.
  */
-export interface IEffect<T> {
-  readonly run: (dependencies: DependencyMap) => Promise<T>;
+export interface IEffect<T, TDeps extends DependencyMap = DependencyMap> {
+  readonly run: (dependencies: TDeps) => Promise<T>;
 }
 
 // --- 유틸리티 타입 (Effect 배열용) ---
@@ -31,4 +31,3 @@ export interface IEffect<T> {
 export type EffectResults<Effects extends ReadonlyArray<IEffect<unknown>>> = {
   [K in keyof Effects]: Effects[K] extends IEffect<infer T> ? T : never;
 };
-

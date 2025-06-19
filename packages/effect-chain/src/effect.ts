@@ -87,7 +87,7 @@ export class Effect<T> implements IEffect<T> {
     });
   }
 
-  public run(dependencies: DependencyMap): Promise<T> {
+  public run<TDeps extends DependencyMap = DependencyMap>(dependencies: TDeps): Promise<T> {
     return this._internalRun(dependencies);
   }
 }
